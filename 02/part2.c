@@ -23,17 +23,33 @@ int read_nums(char *buf, long *arr, size_t arr_size)
     return count;
 }
 
+// check if b is between a and c
+int check_trend(long a, long b, long c)
+{
+    if (a > c)
+        return a > b && b > c;
+    return a < b && b < c;
+}
+
+int check_diff(long a, long b)
+{
+    if (a > b) {
+        return (a - b <= 3) && (a - b >= 1);
+    }
+    return (b - a <= 3) && (b - a >= 1);
+}
+
 int check_is_bad(int direction, int a, int b)
 {
     int bad = 0;
-    if (direction > 0)
+    if (direction)
     {
         if (a > b)
             bad++;
         if (b - a > 3 || b - a < 1)
             bad++;
     }
-    if (direction < 0)
+    else
     {
         if (a < b)
             bad++;
@@ -53,6 +69,7 @@ int main(int argc, char const *argv[])
     long l, r;
     long list[1024][32];
     long list_sizes[1024];
+    long trend_list[1024][32] = {0};
     long result;
 
     printf("Advent of Code 2024\n");
@@ -84,57 +101,34 @@ int main(int argc, char const *argv[])
     result = 0;
     for (int i = 0; i < count; i++)
     {
-        int bad = 0;
         int direction = 1; // +1 for increasing, -1 for decreasing
-        int direction_secondary = 1;
         long x = list[i][0];
         long y = list[i][1];
-        long z = list[i][2];
         if (x < y)
             direction = 1;
         else if (x > y)
             direction = -1;
         else
             continue;
-        if (x < z)
-            direction_secondary = 1;
-        else if (x > z)
-            direction_secondary = -1;
-        else
-            continue;
-        
-        // check j = 1 to list_size
-
-        // check j = 0 to list_size
-        for (int j = 0; j < list_sizes[i]; j+=2)
+        int bad = 0;
+        for (int j = 0; j < list_sizes[i]; j++)
         {
-            if (j == list_sizes[i] - 1 || j == list_sizes[i] - 2)
-                break;
-            long a = list[i][j];
-            long b = list[i][j + 1];
-            long c = list[i][j + 2];
-            long next_bad = check_is_bad(direction, a, b);
-            long next_next_bad = 0;
-            if (j == 0)
-                next_next_bad = check_is_bad(direction_secondary, a, c);
-            else
-                next_next_bad = check_is_bad(direction, a, c);
-            
-            // if (!tmp_bad)
-            //     continue;
-
-            // bad += tmp_bad;
             if (DEBUG)
             {
-                printf("%ld\t%ld\t%ld\t", a, b, c);
+                printf("%ld\t", list[i][j]);
             }
+            if (j < list_sizes[i] - 1)
+                trend_list[i][j] = list[i][j] < list[i][j - 1] ? 1 : -1;
         }
-        if (!bad)
+        for (int j = 0; j < list_sizes[i] - 1; j++)
+        {
+        }
+        if (bad <= 1)
             result++;
         if (DEBUG)
-            bad ? printf("UNSAFE\n") : printf("SAFE\n");
+            bad > 1 ? printf("UNSAFE\n") : printf("SAFE\n");
     }
 
-    printf("%d\n", result);
+    printf("%ld\n", result);
     return 0;
 }

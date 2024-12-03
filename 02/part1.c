@@ -105,20 +105,6 @@ int main(int argc, char const *argv[])
             }
             long b = list[i][j + 1];
             bad += check_is_bad(direction, a, b);
-            // if (direction > 0)
-            // {
-            //     if (a > b)
-            //         bad++;
-            //     if (b - a > 3 || b - a < 1)
-            //         bad++;
-            // }
-            // if (direction < 0)
-            // {
-            //     if (a < b)
-            //         bad++;
-            //     if (a - b > 3 || a - b < 1)
-            //         bad++;
-            // }
         }
         if (!bad)
             result++;
